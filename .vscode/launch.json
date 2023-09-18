@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/joaoarthur/Downloads/Trabalho-de-teoria-da-computacao",
-      "program": "c:/Users/joaoarthur/Downloads/Trabalho-de-teoria-da-computacao/build/Debug/outDebug",
+      "cwd": "c:/Users/Virgílio/Desktop/VS_code/Trabalho de teoria da computacao",
+      "program": "c:/Users/Virgílio/Desktop/VS_code/Trabalho de teoria da computacao/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

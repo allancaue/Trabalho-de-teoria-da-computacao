@@ -50,35 +50,56 @@ void fast()
 {
     char rna[NUM_MAX_LETTERS]; // criada uma diretiva de pré processamento para não ter um hard-code de número - linha 4
 
-    int memoria_inicial, memoria_final, verdade_aug, verdade_uag, verdade_uaa, verdade_uga;
+    int memoria_inicial[10], memoria_final[10], verdade_aug, verdade_uag, verdade_uaa, verdade_uga;
+    int cont_in = 0, cont_fin = 0;
+    int aux_in = -2, aux_fin = -2;
 
     printf("escreva o codigo de rna: ");
     scanf("%s", &rna);
-
-    memoria_inicial = find_initial(rna, 0);
-    memoria_final = find_final(rna, memoria_inicial);
-    // necessário criar uma lógica para encontrar caso exista mais de uma síntese de proteina
-
-    if (memoria_inicial && memoria_final)
+    
+    for (int i = 0; i < 1; i++) //trasformei a memorai em um vetor para poder armazenar mais de uma
     {
-        printf("o rna é: ");
-
-        for (int i = memoria_inicial; i <= memoria_final; i++)
+        memoria_inicial[cont_in] = find_initial(rna, aux_in);
+        aux_fin = memoria_inicial[cont_in];
+        memoria_final[cont_fin] = find_final(rna, aux_fin);
+        if (memoria_inicial[cont_in] >= 0)
         {
-            printf("%c",rna[i]);
+            aux_in = memoria_inicial[cont_in];
+            cont_in++;
+            i--;
         }
-        printf("\n");
-
-        system("pause");
-        
+        if (memoria_final[cont_fin] >= 0)
+        {
+            aux_fin =memoria_final[cont_fin];
+            cont_fin++;
+            i--;
+        }
     }
     
+
+    for (int i = 0; i < cont_in; i++)
+    {
+        if (memoria_inicial[i] && memoria_final[i])
+        {
+            printf("o rna %d é:",i);
+
+            for (int i = memoria_inicial[cont_in]; i <= memoria_final[cont_fin]; i++)
+            {
+                printf("%c",rna[i]);
+            }
+            printf("\n");
+
+            system("pause");
+            
+        }
+    }
 }
 
 int find_initial(char* rna, int initial_index){
 
     int current_state = 0;
     int memory;
+    initial_index = initial_index + 2;
 
     for (int i = initial_index; i < strlen(rna); i++) // isso é basicamente o autômato, a cada iteração, a variável current_state muda, independentemente se vai ser necessário ou não
     { 
@@ -128,7 +149,7 @@ int find_initial(char* rna, int initial_index){
     if (current_state != 3)
     {
         printf("RNA não possui síntese de proteína");
-        return;
+        return -1;
     }
 
     return memory - 2;
@@ -139,6 +160,7 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
 
     int memory;
     int current_state = 0;
+    initial_index = initial_index + 2;
 
     for (int i = initial_index; i < strlen(rna); i++)
     {
@@ -205,7 +227,7 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
     if (current_state != 4)
     {
         printf("RNA não possui síntese de proteína");
-        return;
+        return -1;
     }
 
     return memory;
