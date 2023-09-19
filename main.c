@@ -3,7 +3,7 @@
 #include <string.h>
 #include <locale.h>
 
-#define NUM_MAX_LETTERS 100
+#define NUM_MAX_LETTERS 300
 
 int menu();
 void fast();
@@ -23,7 +23,7 @@ int menu()
 {
     int option;
 
-    printf("==Autômato de RNA==\n\n1 - rapido\n2 - lento\n3 - sair\n\n");
+    printf("==Automato de RNA==\n\n1 - rapido\n2 - lento\n3 - sair\n\n");
     scanf("%d", &option);
 
     switch (option)
@@ -50,12 +50,19 @@ void fast()
 {
     char rna[NUM_MAX_LETTERS]; // criada uma diretiva de pré processamento para não ter um hard-code de número - linha 4
 
+<<<<<<< HEAD
     int memoria_inicial[10], memoria_final[10], verdade_aug, verdade_uag, verdade_uaa, verdade_uga;
     int cont_in = 0, cont_fin = 0;
     int aux_in = -2, aux_fin = -2;
+=======
+    int memoria_inicial, memoria_final;
+    int lista_memoria_inicial[30], lista_memoria_final[30]; // estipulado 30 como um número máximo de sinteses de proteina encontradas em um RNA, totalmente estimativo, pode aumentar
+    int qtd_proteinas = 0;
+>>>>>>> Revertido
 
-    printf("escreva o codigo de rna: ");
+    printf("Escreva o codigo de rna: ");
     scanf("%s", &rna);
+<<<<<<< HEAD
     
     for (int i = 0; i < 1; i++) //trasformei a memorai em um vetor para poder armazenar mais de uma
     {
@@ -74,7 +81,47 @@ void fast()
             cont_fin++;
             i--;
         }
+=======
+
+
+    while (1) { // lógica meio complicadinha mas dá p entender                                   
+        memoria_inicial = find_initial(rna, memoria_final);
+        memoria_final = find_final(rna, memoria_inicial);
+
+        if (memoria_final < 0 || memoria_inicial < 0){
+            break;
+        }
+        else { // se memoria inicial e final > 0, salvar em lista com mesmo index
+
+        // ex: 1ª proteina encontrada entre index 10 e index 20. lista_memoria_inicial[0] = 10 e lista_memoria_inicial[0] = 20
+                                                                                        // -> index é 0 pq sempre começa por 0, então 2ª proteina será index [1]
+            lista_memoria_inicial[qtd_proteinas] = memoria_inicial;
+            lista_memoria_final[qtd_proteinas] = memoria_final;
+            qtd_proteinas++; // variável que contabiliza a quantidade de proteinas encontradas
+        }
     }
+
+    if (qtd_proteinas > 0)
+    {
+        for (int i = 0; i < qtd_proteinas; i++) // for para a quantidade de proteinas encontradas
+        {
+            printf("RNA %i: \n ", i+1);
+            for (int j = lista_memoria_inicial[i]; j <= lista_memoria_final[i]; j++) // for para printar as proteinas de acordo com a faixa de index das listas de memorias
+            {
+                printf("%c", rna[j]);
+            }
+            printf("\n\n");
+
+        }
+
+        system("pause");
+        
+>>>>>>> Revertido
+    }
+    else 
+    {
+        printf("Nao foram encontradas sinteses de proteina\n\n");
+    }   
     
 
     for (int i = 0; i < cont_in; i++)
@@ -148,7 +195,10 @@ int find_initial(char* rna, int initial_index){
 
     if (current_state != 3)
     {
+<<<<<<< HEAD
         printf("RNA não possui síntese de proteína");
+=======
+>>>>>>> Revertido
         return -1;
     }
 
@@ -162,7 +212,7 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
     int current_state = 0;
     initial_index = initial_index + 2;
 
-    for (int i = initial_index; i < strlen(rna); i++)
+    for (int i = initial_index + 3; i < strlen(rna); i++)
     {
         switch (current_state)
         {
@@ -226,7 +276,10 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
 
     if (current_state != 4)
     {
+<<<<<<< HEAD
         printf("RNA não possui síntese de proteína");
+=======
+>>>>>>> Revertido
         return -1;
     }
 
