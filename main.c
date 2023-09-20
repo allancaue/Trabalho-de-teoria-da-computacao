@@ -56,7 +56,7 @@ char** identificar_proteinas()
 {
     char rna[NUM_MAX_LETTERS]; // criada uma diretiva de pré processamento para não ter um hard-code de número - linha 4
 
-    int memoria_inicial, memoria_final;
+    int memoria_inicial = 0, memoria_final = 0;
     int lista_memoria_inicial[30], lista_memoria_final[30]; // estipulado 30 como um número máximo de sinteses de proteina encontradas em um RNA, totalmente estimativo, pode aumentar
     int qtd_proteinas = 0;
 
