@@ -10,7 +10,8 @@ char** identificar_proteinas();
 int find_initial(char* rna, int initial_index);
 int find_final(char* rna, int initial_index);
 void ler_proteinas(char** lista_proteinas);
-int len_array(char** stringArray);
+
+int qtd_proteinas = 0; // quantas proteinas encontradas variável global
 
 int main()
 {
@@ -36,7 +37,7 @@ int menu()
 
             ler_proteinas(lista_proteina);
 
-            for (int i = 0; i < len_array(lista_proteina); i++) {
+            for (int i = 0; i < qtd_proteinas; i++) {
                 free(lista_proteina[i]); // memoria liberada das proteinas no final
             }
 
@@ -58,7 +59,6 @@ char** identificar_proteinas()
 
     int memoria_inicial = 0, memoria_final = 0;
     int lista_memoria_inicial[30], lista_memoria_final[30]; // estipulado 30 como um número máximo de sinteses de proteina encontradas em um RNA, totalmente estimativo, pode aumentar
-    int qtd_proteinas = 0;
 
     printf("Escreva o codigo de RNA: ");
     scanf("%s", rna);
@@ -113,6 +113,8 @@ char** identificar_proteinas()
     else 
     {
         printf("Nao foram encontradas sinteses de proteina\n\n");
+        return "";
+        exit(1);
     }
     
 }
@@ -181,7 +183,7 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
     int memory;
     int current_state = 0;
 
-    for (int i = initial_index; i < strlen(rna); i++)
+    for (int i = initial_index + 2; i < strlen(rna); i++)
     {
         switch (current_state)
         {
@@ -253,8 +255,8 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
 
 void ler_proteinas(char** lista_proteinas) // AQUI ESTÁ SUPER INEFICIENTE MAS É O QUE TEM PARA HOJE!! ODEIO C!!!!!!
 {
-    for (int i = 0; i < len_array(lista_proteinas); i++){ 
-        // Essa função cria uma iteração de criando substring de 3 em 3, ou seja um codon por iteração, apos isso ela ve qual aminoacido é
+    for (int i = 0; i < qtd_proteinas; i++){ 
+        // Essa função cria uma iteração de criando substring de 3 em 3, ou seja um codon por iteração, após isso ela ve qual aminoacido o codon referencia
 
         printf("\nProteina %i: %s \n\n", i+1, lista_proteinas[i]);
         printf("AUG - Metionina \n"); // sempre começa com AUG, menos uma iteração
@@ -310,16 +312,4 @@ void ler_proteinas(char** lista_proteinas) // AQUI ESTÁ SUPER INEFICIENTE MAS �
             }
         }
     }
-}
-
-int len_array(char** stringArray) {
-    if (stringArray == NULL) {
-        return 0;
-    }
-
-    int length = 0;
-    while (stringArray[length] != NULL) {
-        length++;
-    }
-    return length;
 }
