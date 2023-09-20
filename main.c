@@ -24,7 +24,7 @@ int main()
 int menu()
 {
     int option;
-    char** lista_proteina;
+    char** lista_proteina; // array dinamico criado para salvar as proteinas
 
     printf("==Leitura de sintese de proteinas no RNA==\n\n1 - Ler RNA\n2 - Sair\n\n");
     scanf("%d", &option);
@@ -37,17 +37,14 @@ int menu()
             ler_proteinas(lista_proteina);
 
             for (int i = 0; i < len_array(lista_proteina); i++) {
-                free(lista_proteina[i]);
+                free(lista_proteina[i]); // memoria liberada das proteinas no final
             }
 
-            free(lista_proteina);
+            free(lista_proteina); // memoria liberada da array no final
             return 0;
             break;
         case 2:
             //lento
-            return 1;
-            break;
-        case 3:
             return 0;
             break;
         default:
@@ -67,9 +64,7 @@ char** identificar_proteinas()
     printf("Escreva o codigo de RNA: ");
     scanf("%s", rna);
 
-
-
-    while (1) { // lógica meio complicadinha mas dá p entender                                   
+    while (1) { // lógica meio complicadinha mas dá p entender
         memoria_inicial = find_initial(rna, memoria_final);
         memoria_final = find_final(rna, memoria_inicial);
 
@@ -78,7 +73,8 @@ char** identificar_proteinas()
         }
         else { // se memoria inicial e final > 0, salvar em lista com mesmo index
 
-        // ex: 1ª proteina encontrada entre index 10 e index 20. lista_memoria_inicial[0] = 10 e lista_memoria_inicial[0] = 20
+        // EX: 1ª proteina encontrada entre index 10 e index 20. lista_memoria_inicial[0] = 10 e lista_memoria_inicial[0] = 20, o index vai servir para encontrar a proteina dps
+
                                                                                     // -> index é 0 pq sempre começa por 0, então 2ª proteina será index [1]
             lista_memoria_inicial[qtd_proteinas] = memoria_inicial;
             lista_memoria_final[qtd_proteinas] = memoria_final;
@@ -87,31 +83,26 @@ char** identificar_proteinas()
     }
 
 
-    if (qtd_proteinas > 0)
+    if (qtd_proteinas > 0) // nome autoexplicativo, caso não seja encontrada nenhuma proteina pula
     {
-        char** lista_proteinas = (char**)malloc(qtd_proteinas * sizeof(char*));
+        char** lista_proteinas = (char**)malloc(qtd_proteinas * sizeof(char*)); // array dinamico para salvar as proteinas, um array de strings. É para ser eficiente em memoria
 
         for (int i = 0; i < qtd_proteinas; i++) {
 
             lista_proteinas[i] = (char*)malloc(lista_memoria_final[i] - lista_memoria_inicial[i] + 2); // +2 para caractere final '\0'
-            if (lista_proteinas[i] == NULL) {
+
+            if (lista_proteinas[i] == NULL) { // caso nao tenha memoria
                 printf("Memory allocation failed.\n");
-                exit(1); // para dar erro
+                exit(1);
             }
 
             int k = 0;
-            for (int j = lista_memoria_inicial[i]; j <= lista_memoria_final[i]; j++) {
-                lista_proteinas[i][k] = rna[j];
+            for (int j = lista_memoria_inicial[i]; j <= lista_memoria_final[i]; j++) { 
+                lista_proteinas[i][k] = rna[j]; // essa linha é cada letra q vai ser adicionada na array
                 k++;
             }
 
-            lista_proteinas[i][k] = '\0'; // caractere final
-            printf("\n\n");
-        }
-
-        printf("Sinteses de proteinas:\n");
-        for (int i = 0; i < qtd_proteinas; i++) {
-            printf("Proteina %i: %s\n", i + 1, lista_proteinas[i]);
+            lista_proteinas[i][k] = '\0'; // caractere final de toda array
         }
 
         return lista_proteinas;
@@ -261,11 +252,12 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
     return memory;
 }
 
-void ler_proteinas(char** lista_proteinas)
+void ler_proteinas(char** lista_proteinas) // AQUI ESTÁ SUPER INEFICIENTE MAS É O QUE TEM PARA HOJE!! ODEIO C!!!!!!
 {
-    for (int i = 0; i < len_array(lista_proteinas); i++){
-        
-        printf("Proteina %i: %s \n\n", i+1, lista_proteinas[i]);
+    for (int i = 0; i < len_array(lista_proteinas); i++){ 
+        // Essa função cria uma iteração de criando substring de 3 em 3, ou seja um codon por iteração, apos isso ela ve qual aminoacido é
+
+        printf("\nProteina %i: %s \n\n", i+1, lista_proteinas[i]);
         printf("AUG - Metionina \n"); // sempre começa com AUG, menos uma iteração
         for (int j = 3; j < strlen(lista_proteinas[i]); j += 3){
 
@@ -312,9 +304,10 @@ void ler_proteinas(char** lista_proteinas)
                 printf("%s - Ácido Glutâmico\n", codon);
             } else if (strcmp(codon, "GGU") == 0 || strcmp(codon, "GGC") == 0 || strcmp(codon, "GGA") == 0 || strcmp(codon, "GGG") == 0) {
                 printf("%s - Glicina\n", codon);
-            }
-            else if (strcmp(codon, "UAG") == 0 || strcmp(codon, "UAA") == 0 || strcmp(codon, "UGA") == 0) {
+            } else if (strcmp(codon, "UAG") == 0 || strcmp(codon, "UAA") == 0 || strcmp(codon, "UGA") == 0) {
                 printf("%s - Codon de parada\n", codon);
+            } else {
+                printf("%s - Códon desconhecido ou de parada\n", codon);
             }
         }
     }
