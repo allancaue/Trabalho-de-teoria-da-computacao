@@ -6,9 +6,11 @@
 #define NUM_MAX_LETTERS 300
 
 int menu();
-void fast();
+char** identificar_proteinas();
 int find_initial(char* rna, int initial_index);
 int find_final(char* rna, int initial_index);
+void ler_proteinas(char** lista_proteinas);
+int len_array(char** stringArray);
 
 int main()
 {
@@ -16,22 +18,30 @@ int main()
     do
     {
     } while (menu() == 1);
-    
+     
 }
 
 int menu()
 {
     int option;
+    char** lista_proteina;
 
-    printf("==Automato de RNA==\n\n1 - rapido\n2 - lento\n3 - sair\n\n");
+    printf("==Leitura de sintese de proteinas no RNA==\n\n1 - Ler RNA\n2 - Sair\n\n");
     scanf("%d", &option);
 
     switch (option)
     {
         case 1:
-            fast(); 
-            // criar função para saber todos os aminoácidos produzidos passados pelo RNAm
-            return 1;
+            lista_proteina = identificar_proteinas();
+
+            ler_proteinas(lista_proteina);
+
+            for (int i = 0; i < len_array(lista_proteina); i++) {
+                free(lista_proteina[i]);
+            }
+
+            free(lista_proteina);
+            return 0;
             break;
         case 2:
             //lento
@@ -46,42 +56,17 @@ int menu()
     }
 }
 
-void fast()
+char** identificar_proteinas()
 {
     char rna[NUM_MAX_LETTERS]; // criada uma diretiva de pré processamento para não ter um hard-code de número - linha 4
 
-<<<<<<< HEAD
-    int memoria_inicial[10], memoria_final[10], verdade_aug, verdade_uag, verdade_uaa, verdade_uga;
-    int cont_in = 0, cont_fin = 0;
-    int aux_in = -2, aux_fin = -2;
-=======
     int memoria_inicial, memoria_final;
     int lista_memoria_inicial[30], lista_memoria_final[30]; // estipulado 30 como um número máximo de sinteses de proteina encontradas em um RNA, totalmente estimativo, pode aumentar
     int qtd_proteinas = 0;
->>>>>>> Revertido
 
-    printf("Escreva o codigo de rna: ");
-    scanf("%s", &rna);
-<<<<<<< HEAD
-    
-    for (int i = 0; i < 1; i++) //trasformei a memorai em um vetor para poder armazenar mais de uma
-    {
-        memoria_inicial[cont_in] = find_initial(rna, aux_in);
-        aux_fin = memoria_inicial[cont_in];
-        memoria_final[cont_fin] = find_final(rna, aux_fin);
-        if (memoria_inicial[cont_in] >= 0)
-        {
-            aux_in = memoria_inicial[cont_in];
-            cont_in++;
-            i--;
-        }
-        if (memoria_final[cont_fin] >= 0)
-        {
-            aux_fin =memoria_final[cont_fin];
-            cont_fin++;
-            i--;
-        }
-=======
+    printf("Escreva o codigo de RNA: ");
+    scanf("%s", rna);
+
 
 
     while (1) { // lógica meio complicadinha mas dá p entender                                   
@@ -94,59 +79,58 @@ void fast()
         else { // se memoria inicial e final > 0, salvar em lista com mesmo index
 
         // ex: 1ª proteina encontrada entre index 10 e index 20. lista_memoria_inicial[0] = 10 e lista_memoria_inicial[0] = 20
-                                                                                        // -> index é 0 pq sempre começa por 0, então 2ª proteina será index [1]
+                                                                                    // -> index é 0 pq sempre começa por 0, então 2ª proteina será index [1]
             lista_memoria_inicial[qtd_proteinas] = memoria_inicial;
             lista_memoria_final[qtd_proteinas] = memoria_final;
             qtd_proteinas++; // variável que contabiliza a quantidade de proteinas encontradas
         }
     }
 
+
     if (qtd_proteinas > 0)
     {
-        for (int i = 0; i < qtd_proteinas; i++) // for para a quantidade de proteinas encontradas
-        {
-            printf("RNA %i: \n ", i+1);
-            for (int j = lista_memoria_inicial[i]; j <= lista_memoria_final[i]; j++) // for para printar as proteinas de acordo com a faixa de index das listas de memorias
-            {
-                printf("%c", rna[j]);
-            }
-            printf("\n\n");
+        char** lista_proteinas = (char**)malloc(qtd_proteinas * sizeof(char*));
 
+        for (int i = 0; i < qtd_proteinas; i++) {
+
+            lista_proteinas[i] = (char*)malloc(lista_memoria_final[i] - lista_memoria_inicial[i] + 2); // +2 para caractere final '\0'
+            if (lista_proteinas[i] == NULL) {
+                printf("Memory allocation failed.\n");
+                exit(1); // para dar erro
+            }
+
+            int k = 0;
+            for (int j = lista_memoria_inicial[i]; j <= lista_memoria_final[i]; j++) {
+                lista_proteinas[i][k] = rna[j];
+                k++;
+            }
+
+            lista_proteinas[i][k] = '\0'; // caractere final
+            printf("\n\n");
         }
 
+        printf("Sinteses de proteinas:\n");
+        for (int i = 0; i < qtd_proteinas; i++) {
+            printf("Proteina %i: %s\n", i + 1, lista_proteinas[i]);
+        }
+
+        return lista_proteinas;
+
         system("pause");
+
         
->>>>>>> Revertido
     }
     else 
     {
         printf("Nao foram encontradas sinteses de proteina\n\n");
-    }   
-    
-
-    for (int i = 0; i < cont_in; i++)
-    {
-        if (memoria_inicial[i] && memoria_final[i])
-        {
-            printf("o rna %d é:",i);
-
-            for (int i = memoria_inicial[cont_in]; i <= memoria_final[cont_fin]; i++)
-            {
-                printf("%c",rna[i]);
-            }
-            printf("\n");
-
-            system("pause");
-            
-        }
     }
+    
 }
 
 int find_initial(char* rna, int initial_index){
 
     int current_state = 0;
     int memory;
-    initial_index = initial_index + 2;
 
     for (int i = initial_index; i < strlen(rna); i++) // isso é basicamente o autômato, a cada iteração, a variável current_state muda, independentemente se vai ser necessário ou não
     { 
@@ -195,10 +179,6 @@ int find_initial(char* rna, int initial_index){
 
     if (current_state != 3)
     {
-<<<<<<< HEAD
-        printf("RNA não possui síntese de proteína");
-=======
->>>>>>> Revertido
         return -1;
     }
 
@@ -210,9 +190,8 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
 
     int memory;
     int current_state = 0;
-    initial_index = initial_index + 2;
 
-    for (int i = initial_index + 3; i < strlen(rna); i++)
+    for (int i = initial_index; i < strlen(rna); i++)
     {
         switch (current_state)
         {
@@ -276,13 +255,79 @@ int find_final(char* rna, int initial_index) // isso é basicamente o autômato,
 
     if (current_state != 4)
     {
-<<<<<<< HEAD
-        printf("RNA não possui síntese de proteína");
-=======
->>>>>>> Revertido
         return -1;
     }
 
     return memory;
 }
 
+void ler_proteinas(char** lista_proteinas)
+{
+    for (int i = 0; i < len_array(lista_proteinas); i++){
+        
+        printf("Proteina %i: %s \n\n", i+1, lista_proteinas[i]);
+        printf("AUG - Metionina \n"); // sempre começa com AUG, menos uma iteração
+        for (int j = 3; j < strlen(lista_proteinas[i]); j += 3){
+
+            char codon[4];
+            memcpy(codon, lista_proteinas[i] + j, 3);
+
+            if (strcmp(codon, "AUG") == 0) {
+                printf("%s - Metionina\n", codon);
+            } else if (strcmp(codon, "UUU") == 0 || strcmp(codon, "UUC") == 0) {
+                printf("%s - Fenilalanina\n", codon);
+            } else if (strcmp(codon, "UUA") == 0 || strcmp(codon, "UUG") == 0 || strcmp(codon, "CUU") == 0 || strcmp(codon, "CUC") == 0 || strcmp(codon, "CUA") == 0 || strcmp(codon, "CUG") == 0) {
+                printf("%s - Leucina\n", codon);
+            } else if (strcmp(codon, "UCU") == 0 || strcmp(codon, "UCC") == 0 || strcmp(codon, "UCA") == 0 || strcmp(codon, "UCG") == 0 || strcmp(codon, "AGU") == 0 || strcmp(codon, "AGC") == 0) {
+                printf("%s - Serina\n", codon);
+            } else if (strcmp(codon, "UAU") == 0 || strcmp(codon, "UAC") == 0) {
+                printf("%s - Tirosina\n", codon);
+            } else if (strcmp(codon, "UGU") == 0 || strcmp(codon, "UGC") == 0) {
+                printf("%s - Cisteína\n", codon);
+            } else if (strcmp(codon, "UGG") == 0) {
+                printf("%s - Triptofano\n", codon);
+            } else if (strcmp(codon, "CCU") == 0 || strcmp(codon, "CCC") == 0 || strcmp(codon, "CCA") == 0 || strcmp(codon, "CCG") == 0) {
+                printf("%s - Prolina\n", codon);
+            } else if (strcmp(codon, "CAU") == 0 || strcmp(codon, "CAC") == 0) {
+                printf("%s - Histidina\n", codon);
+            } else if (strcmp(codon, "CAA") == 0 || strcmp(codon, "CAG") == 0) {
+                printf("%s - Glutamina\n", codon);
+            } else if (strcmp(codon, "CGU") == 0 || strcmp(codon, "CGC") == 0 || strcmp(codon, "CGA") == 0 || strcmp(codon, "CGG") == 0 || strcmp(codon, "AGA") == 0 || strcmp(codon, "AGG") == 0) {
+                printf("%s - Arginina\n", codon);
+            } else if (strcmp(codon, "AUU") == 0 || strcmp(codon, "AUC") == 0 || strcmp(codon, "AUA") == 0) {
+                printf("%s - Isoleucina\n", codon);
+            } else if (strcmp(codon, "ACU") == 0 || strcmp(codon, "ACC") == 0 || strcmp(codon, "ACA") == 0 || strcmp(codon, "ACG") == 0) {
+                printf("%s - Treonina\n", codon);
+            } else if (strcmp(codon, "AAU") == 0 || strcmp(codon, "AAC") == 0) {
+                printf("%s - Asparagina\n", codon);
+            } else if (strcmp(codon, "AAA") == 0 || strcmp(codon, "AAG") == 0) {
+                printf("%s - Lisina\n", codon);
+            } else if (strcmp(codon, "GUU") == 0 || strcmp(codon, "GUC") == 0 || strcmp(codon, "GUA") == 0 || strcmp(codon, "GUG") == 0) {
+                printf("%s - Valina\n", codon);
+            } else if (strcmp(codon, "GCU") == 0 || strcmp(codon, "GCC") == 0 || strcmp(codon, "GCA") == 0 || strcmp(codon, "GCG") == 0) {
+                printf("%s - Alanina\n", codon);
+            } else if (strcmp(codon, "GAU") == 0 || strcmp(codon, "GAC") == 0) {
+                printf("%s - Ácido Aspártico\n", codon);
+            } else if (strcmp(codon, "GAA") == 0 || strcmp(codon, "GAG") == 0) {
+                printf("%s - Ácido Glutâmico\n", codon);
+            } else if (strcmp(codon, "GGU") == 0 || strcmp(codon, "GGC") == 0 || strcmp(codon, "GGA") == 0 || strcmp(codon, "GGG") == 0) {
+                printf("%s - Glicina\n", codon);
+            }
+            else if (strcmp(codon, "UAG") == 0 || strcmp(codon, "UAA") == 0 || strcmp(codon, "UGA") == 0) {
+                printf("%s - Codon de parada\n", codon);
+            }
+        }
+    }
+}
+
+int len_array(char** stringArray) {
+    if (stringArray == NULL) {
+        return 0;
+    }
+
+    int length = 0;
+    while (stringArray[length] != NULL) {
+        length++;
+    }
+    return length;
+}
