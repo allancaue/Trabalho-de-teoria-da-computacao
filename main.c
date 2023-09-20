@@ -44,7 +44,6 @@ int menu()
             return 0;
             break;
         case 2:
-            //lento
             return 0;
             break;
         default:
@@ -92,7 +91,7 @@ char** identificar_proteinas()
             lista_proteinas[i] = (char*)malloc(lista_memoria_final[i] - lista_memoria_inicial[i] + 2); // +2 para caractere final '\0'
 
             if (lista_proteinas[i] == NULL) { // caso nao tenha memoria
-                printf("Memory allocation failed.\n");
+                printf("Alocacao de memoria falhou\n");
                 exit(1);
             }
 
